@@ -1,0 +1,27 @@
+// Custom variables for SiPinter (Kesehatan: Hijau dan Kuning Logo)
+$primary: #009639; // Hijau Logo Bekasi
+$secondary: #ffc107; // Kuning Logo
+$font-family-base: 'Inter', 'Roboto', sans-serif;
+
+@import 'bootstrap/scss/bootstrap';
+
+// Custom utilities for Glassmorphism
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+}
+
+.font-serif {
+  font-family: 'Lora', serif;
+}
+
+.text-primary-dark {
+  color: #009639;
+}
+
+.bg-primary-light {
+  background-color: #fff3cd !important; /* Kuning sangat terang */
+  color: #009639 !important;
+}
