@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelurahan Bintara Jaya - SiPintar Terintegrasi</title>
+    <meta name="description" content="Profil Kelurahan Bintara Jaya dan Implementasi Program SiPintar untuk masyarakat yang lebih sehat dan sejahtera.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/42/Coat_of_arms_of_Bekasi.svg" alt="Logo Kota Bekasi">
+            <h2>Bintara Jaya</h2>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#beranda">Beranda</a></li>
+            <li><a href="#profil">Profil Kelurahan</a></li>
+            <li><a href="#sipintar">Program SiPintar</a></li>
+            <li><a href="#kegiatan">Kegiatan Warga</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="beranda" class="hero">
+        <div class="hero-content">
+            <h1>Selamat Datang di Kelurahan Bintara Jaya</h1>
+            <p>Mewujudkan masyarakat yang sehat, sejahtera, dan mandiri melalui program inovatif SiPintar terintegrasi.</p>
+            <a href="#profil" class="btn">Kenali Lebih Jauh</a>
+        </div>
+    </section>
+
+    <!-- Profil Section -->
+    <section id="profil">
+        <h2 class="section-title">Profil Kelurahan</h2>
+        <div class="profil">
+            <div class="profil-text">
+                <p>Kelurahan Bintara Jaya merupakan salah satu kelurahan yang terletak di wilayah administrasi Kota Bekasi. Kami berkomitmen untuk terus meningkatkan pelayanan publik dan kesejahteraan warga.</p>
+                <p>Dengan semangat gotong royong dan partisipasi aktif dari seluruh lapisan masyarakat, Kelurahan Bintara Jaya terus bergerak maju menjadi lingkungan yang asri, aman, dan berdaya saing tinggi. Kami juga secara konsisten mendukung program-program kesehatan dan sosial, salah satunya adalah pemantauan kesehatan terpadu melalui Posyandu.</p>
+            </div>
+            <div class="profil-image">
+                <img src="assets/citizen_2.png" alt="Kegiatan Musyawarah Warga di Kelurahan Bintara Jaya">
+            </div>
+        </div>
+    </section>
+
+    <!-- Program SiPintar Section -->
+    <section id="sipintar" class="program">
+        <h2 class="section-title">Implementasi SiPintar</h2>
+        <div class="program-grid">
+            <div class="program-card">
+                <h3>Sistem Informasi Posyandu</h3>
+                <p>Mendigitalisasi data KMS dan riwayat kesehatan balita, lansia, dan warga produktif untuk pemantauan yang lebih akurat.</p>
+            </div>
+            <div class="program-card">
+                <h3>Pemantauan Gizi Real-time</h3>
+                <p>Memantau kurva pertumbuhan balita dan status gizi secara real-time untuk mencegah stunting sejak dini.</p>
+            </div>
+            <div class="program-card">
+                <h3>Keterlibatan Aktif Kader</h3>
+                <p>Memberdayakan kader Posyandu dengan alat pencatatan yang efisien sehingga pelayanan kepada warga menjadi lebih maksimal.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slider Kegiatan Section -->
+    <section id="kegiatan" class="kegiatan">
+        <h2 class="section-title">Kegiatan Warga & Posyandu</h2>
+        <div class="slider-container">
+            <button class="slider-btn prev" onclick="moveSlide(-1)">&#10094;</button>
+            <div class="slider" id="slider">
+                <!-- Slide 1 -->
+                <div class="slide">
+                    <img src="assets/posyandu.png" alt="Kegiatan Posyandu Balita">
+                    <div class="slide-caption">
+                        <h3>Kegiatan Posyandu Rutin</h3>
+                        <p>Pemantauan tumbuh kembang balita oleh kader yang ramah dan profesional.</p>
+                    </div>
+                </div>
+                <!-- Slide 2 -->
+                <div class="slide">
+                    <img src="assets/citizen_1.png" alt="Gotong Royong Warga">
+                    <div class="slide-caption">
+                        <h3>Gotong Royong Lingkungan</h3>
+                        <p>Warga Bintara Jaya bersinergi membersihkan lingkungan secara rutin.</p>
+                    </div>
+                </div>
+                <!-- Slide 3 -->
+                <div class="slide">
+                    <img src="assets/citizen_2.png" alt="Musyawarah Warga">
+                    <div class="slide-caption">
+                        <h3>Musyawarah Perencanaan</h3>
+                        <p>Rapat bersama dalam merumuskan kemajuan pembangunan Kelurahan Bintara Jaya.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="slider-btn next" onclick="moveSlide(1)">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <h2>Kelurahan Bintara Jaya</h2>
+        <p>&copy; 2026 Pemerintah Kota Bekasi - Program SiPintar. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
