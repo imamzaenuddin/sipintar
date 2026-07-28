@@ -25,3 +25,11 @@ $font-family-base: 'Inter', 'Roboto', sans-serif;
   background-color: #fff3cd !important; /* Kuning sangat terang */
   color: #009639 !important;
 }
+
+.btn-primary, .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+  color: #ffffff !important;
+}
+
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active {
+  color: #ffffff !important;
+}

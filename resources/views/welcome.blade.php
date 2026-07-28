@@ -35,7 +35,7 @@
                         <a href="{{ route('login') }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold w-100 w-lg-auto mb-2 mb-lg-0">Masuk</a>
                     </li>
                     <li class="nav-item mt-2 mt-lg-0 w-100 w-lg-auto">
-                        <a href="{{ route('register') }}" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm hover-zoom w-100 w-lg-auto">Daftar Warga</a>
+                        <a href="{{ route('register') }}" class="btn btn-primary text-white rounded-pill px-4 fw-bold shadow-sm hover-zoom w-100 w-lg-auto">Daftar</a>
                     </li>
                 </ul>
             </div>
@@ -54,7 +54,7 @@
                     SiPintar membawa pengalaman Posyandu ke dalam genggaman Anda. Dapatkan KMS Digital secara real-time dan notifikasi jadwal langsung di HP.
                 </p>
                 <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
-                    <a href="{{ route('register') }}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg hover-zoom fw-bold">Mulai Sekarang</a>
+                    <a href="{{ route('register') }}" class="btn btn-primary text-white btn-lg rounded-pill px-5 shadow-lg hover-zoom fw-bold">Mulai Sekarang</a>
                     <a href="#fitur" class="btn btn-light btn-lg rounded-pill px-4 shadow-sm hover-zoom text-primary fw-bold bg-white border-0">Pelajari Fitur</a>
                 </div>
             </div>
