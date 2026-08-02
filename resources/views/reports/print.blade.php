@@ -109,7 +109,7 @@
             <tr>
                 <th>No</th>
                 <th>Tanggal Penimbangan</th>
-                <th>Nama Balita</th>
+                <th>Nama</th>
                 <th>Nama Orang Tua / Wali</th>
                 <th>Umur</th>
                 <th>Berat Badan (kg)</th>
