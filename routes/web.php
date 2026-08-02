@@ -34,9 +34,32 @@ Route::middleware('auth')->group(function () {
 
     // Reporting Module
     Volt::route('/reports', 'reports.index')->name('reports.index');
-    Route::get('/reports/print', function() {
+    Route::get('/reports/print', function(\Illuminate\Http\Request $request) {
         if (!in_array(auth()->user()->role, ['kader', 'admin'])) abort(403);
-        $records = \App\Models\KmsRecord::with(['familyMember.family.user'])->orderBy('recorded_date', 'desc')->get();
+        
+        $month = $request->query('month', now()->format('m'));
+        $year = $request->query('year', now()->format('Y'));
+        $category = $request->query('category', '');
+
+        $records = \App\Models\KmsRecord::with(['familyMember.family.user'])
+            ->whereMonth('recorded_date', $month)
+            ->whereYear('recorded_date', $year)
+            ->when($category, function ($q) use ($category) {
+                $q->whereHas('familyMember', function ($sub) use ($category) {
+                    if ($category == 'balita') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) < 5');
+                    } elseif ($category == 'remaja') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
+                    } elseif ($category == 'usia_produktif') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 15 AND 59');
+                    } elseif ($category == 'lansia') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) >= 60');
+                    }
+                });
+            })
+            ->orderBy('recorded_date', 'desc')
+            ->get();
+
         return view('reports.print', compact('records'));
     })->name('reports.print');
 

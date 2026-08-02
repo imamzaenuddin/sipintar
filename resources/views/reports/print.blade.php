@@ -140,7 +140,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="10">Belum ada data penimbangan balita terdaftar.</td>
+                    <td colspan="10">Belum ada data penimbangan sasaran terdaftar.</td>
                 </tr>
             @endforelse
         </tbody>

@@ -11,6 +11,7 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
     
     protected $paginationTheme = 'bootstrap';
     
+    public $filterCategory = '';
     public $filterMonth;
     public $filterYear;
 
@@ -26,15 +27,26 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
 
     public function with()
     {
-        $records = KmsRecord::with(['familyMember.family.user'])
+        $query = KmsRecord::with(['familyMember.family.user'])
             ->whereMonth('recorded_date', $this->filterMonth)
             ->whereYear('recorded_date', $this->filterYear)
-            ->orderBy('recorded_date', 'desc')
-            ->paginate(15);
-            
+            ->when($this->filterCategory, function ($q) {
+                $q->whereHas('familyMember', function ($sub) {
+                    if ($this->filterCategory == 'balita') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) < 5');
+                    } elseif ($this->filterCategory == 'remaja') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
+                    } elseif ($this->filterCategory == 'usia_produktif') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 15 AND 59');
+                    } elseif ($this->filterCategory == 'lansia') {
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) >= 60');
+                    }
+                });
+            });
+
         return [
-            'records' => $records,
-            'totalPengukuran' => KmsRecord::whereMonth('recorded_date', $this->filterMonth)->whereYear('recorded_date', $this->filterYear)->count(),
+            'records' => (clone $query)->orderBy('recorded_date', 'desc')->paginate(15),
+            'totalPengukuran' => $query->count(),
         ];
     }
 }; ?>
@@ -43,10 +55,10 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold mb-1 font-serif text-dark">Laporan Posyandu Bulanan</h2>
-            <p class="text-muted mb-0">Rekapitulasi pengukuran dan penimbangan Balita.</p>
+            <p class="text-muted mb-0">Rekapitulasi pengukuran dan penimbangan.</p>
         </div>
         <div>
-            <a href="{{ route('reports.print') }}" target="_blank" class="btn rounded-pill px-4 fw-bold shadow-sm" style="background-color: #009639; color: white;">
+            <a href="{{ route('reports.print', ['month' => $filterMonth, 'year' => $filterYear, 'category' => $filterCategory]) }}" target="_blank" class="btn rounded-pill px-4 fw-bold shadow-sm" style="background-color: #009639; color: white;">
                 <i class="fa-solid fa-print me-2"></i> Cetak Dokumen F1
             </a>
         </div>
@@ -55,10 +67,17 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
     <div class="card border-0 shadow-sm rounded-4" style="border-top: 5px solid #ffc107 !important;">
         <div class="card-header bg-white border-bottom-0 pt-4 pb-3">
             <div class="row align-items-center">
-                <div class="col-md-6">
+                <div class="col-md-5">
                     <h5 class="fw-bold text-dark font-serif mb-0"><i class="fa-solid fa-list-check text-warning me-2"></i> Rekap Penimbangan</h5>
                 </div>
-                <div class="col-md-6 mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+                <div class="col-md-7 mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+                    <select wire:model.live="filterCategory" class="form-select w-auto bg-light border-0 fw-bold">
+                        <option value="">Semua Sasaran</option>
+                        <option value="balita">Balita (0-4 Tahun)</option>
+                        <option value="remaja">Remaja (10-18 Tahun)</option>
+                        <option value="usia_produktif">Usia Produktif (15-59 Tahun)</option>
+                        <option value="lansia">Lansia (≥ 60 Tahun)</option>
+                    </select>
                     <select wire:model.live="filterMonth" class="form-select w-auto bg-light border-0 fw-bold">
                         @for($m=1; $m<=12; $m++)
                             <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}">{{ \Carbon\Carbon::create()->month($m)->translatedFormat('F') }}</option>
@@ -86,7 +105,7 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
                         <thead class="table-light text-muted small">
                             <tr>
                                 <th class="ps-4">Tanggal</th>
-                                <th>Nama Balita</th>
+                                <th>Nama Sasaran</th>
                                 <th>Umur saat Ukur</th>
                                 <th>BB (Kg)</th>
                                 <th>TB (Cm)</th>
