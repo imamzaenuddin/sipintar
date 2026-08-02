@@ -15,11 +15,34 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        \App\Models\User::updateOrCreate(
+            ['nik' => '1111111111111111'],
+            [
+                'name' => 'Super Admin',
+                'role' => 'admin',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'phone' => '081111111111',
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        \App\Models\User::updateOrCreate(
+            ['nik' => '2222222222222222'],
+            [
+                'name' => 'Kader Posyandu',
+                'role' => 'kader',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'phone' => '082222222222',
+            ]
+        );
+
+        \App\Models\User::updateOrCreate(
+            ['nik' => '3333333333333333'],
+            [
+                'name' => 'Warga Masyarakat',
+                'role' => 'warga',
+                'password' => \Illuminate\Support\Facades\Hash::make('password123'),
+                'phone' => '083333333333',
+            ]
+        );
     }
 }
