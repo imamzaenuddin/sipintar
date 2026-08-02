@@ -15,3 +15,12 @@ Sistem ini dibangun dengan menggunakan arsitektur modern untuk memastikan perfor
 
 Untuk memahami arsitektur user (Warga, Kader, Admin) serta matriks hak akses untuk tiap modul, silakan merujuk pada:
 - [Blueprint Sistem (blueprint.md)](./blueprint.md)
+
+## 🔑 Kredensial Testing (Default Login)
+Untuk mempermudah testing dan pengembangan, Anda bisa menjalankan `php artisan db:seed` untuk membuat 3 akun default dengan masing-masing level akses berikut. Password untuk semua akun adalah `password123`.
+
+| Role | Username (NIK) | Password |
+| :--- | :--- | :--- |
+| **Admin** | `1111111111111111` | `password123` |
+| **Kader** | `2222222222222222` | `password123` |
+| **Warga** | `3333333333333333` | `password123` |
