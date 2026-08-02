@@ -44,5 +44,9 @@ class DatabaseSeeder extends Seeder
                 'phone' => '083333333333',
             ]
         );
+
+        $this->call([
+            DummyDataSeeder::class,
+        ]);
     }
 }
