@@ -54,7 +54,7 @@ class DummyDataSeeder extends Seeder
                 'head_of_family_name' => $warga->name,
                 'province_code' => '32',
                 'city_code' => '3275',
-                'district_code' => '327501', 
+                'district_code' => '327501',
                 'village_code' => '3275011001',
                 'address_rt' => str_pad(rand(1, 15), 3, '0', STR_PAD_LEFT),
                 'address_rw' => str_pad(rand(1, 10), 3, '0', STR_PAD_LEFT),
@@ -89,7 +89,7 @@ class DummyDataSeeder extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             $umurBulan = rand(3, 58); // Umur balita dalam bulan
             $birthDate = Carbon::now()->subMonths($umurBulan);
-            
+
             $balita = FamilyMember::create([
                 'family_id' => $faker->randomElement($families),
                 'nik' => $faker->unique()->numerify('3275############'),
@@ -111,11 +111,11 @@ class DummyDataSeeder extends Seeder
 
         for ($m = 0; $m <= 2; $m++) {
             $targetMonth = Carbon::now()->subMonths($m);
-            
+
             foreach ($kategoriKegiatan as $keg) {
                 // Tanggal jadwal di bulan tersebut (antara tgl 5 - 25)
                 $scheduleDate = $targetMonth->copy()->startOfMonth()->addDays(rand(5, 25))->setHour(8)->setMinute(0);
-                
+
                 $schedule = Schedule::create([
                     'title' => $keg['title'] . ' - ' . $scheduleDate->translatedFormat('F Y'),
                     'description' => 'Kegiatan rutin ' . strtolower($keg['title']) . ' tingkat RW.',
@@ -133,12 +133,12 @@ class DummyDataSeeder extends Seeder
                             $umurSaatTimbang = $balita->birth_date->diffInMonths($scheduleDate);
                             $baseWeight = 3.5 + ($umurSaatTimbang * 0.2); // rumus kasaran
                             $baseHeight = 50 + ($umurSaatTimbang * 1.5);
-                            
+
                             $weight = round($baseWeight + ($faker->randomFloat(1, -0.5, 1.5)), 1);
                             $height = round($baseHeight + ($faker->randomFloat(1, -2, 3)), 1);
-                            
+
                             $statusGizi = $faker->randomElement(['Gizi Baik', 'Gizi Baik', 'Gizi Baik', 'Gizi Kurang', 'Gizi Lebih / Obesitas']);
-                            
+
                             KmsRecord::create([
                                 'family_member_id' => $balita->id,
                                 'recorded_date' => $scheduleDate->format('Y-m-d'),
@@ -155,6 +155,8 @@ class DummyDataSeeder extends Seeder
                 }
             }
         }
+
+
 
         $this->command->info('Generate dummy data berhasil!');
     }
