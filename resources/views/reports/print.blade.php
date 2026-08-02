@@ -101,6 +101,16 @@
     <div class="header">
         <h2>LAPORAN HASIL PENIMBANGAN POSYANDU (F1)</h2>
         <p>Aplikasi SiPintar - Sistem Informasi & Pemantauan Posyandu Terintegrasi</p>
+        <p>
+            <strong>Sasaran:</strong> 
+            @if(request('category') == 'balita') Balita (0-4 Tahun)
+            @elseif(request('category') == 'remaja') Remaja (10-18 Tahun)
+            @elseif(request('category') == 'usia_produktif') Usia Produktif (15-59 Tahun)
+            @elseif(request('category') == 'lansia') Lansia (≥ 60 Tahun)
+            @else Semua Sasaran
+            @endif
+            | <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month(request('month', now()->month))->translatedFormat('F') }} {{ request('year', now()->year) }}
+        </p>
         <p>Tanggal Cetak: {{ now()->translatedFormat('d F Y') }}</p>
     </div>
 

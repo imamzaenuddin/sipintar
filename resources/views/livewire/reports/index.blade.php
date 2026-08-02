@@ -33,13 +33,13 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
             ->when($this->filterCategory, function ($q) {
                 $q->whereHas('familyMember', function ($sub) {
                     if ($this->filterCategory == 'balita') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) < 5');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) < 5');
                     } elseif ($this->filterCategory == 'remaja') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
                     } elseif ($this->filterCategory == 'usia_produktif') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) BETWEEN 15 AND 59');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) BETWEEN 15 AND 59');
                     } elseif ($this->filterCategory == 'lansia') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, kms_records.recorded_date) >= 60');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) >= 60');
                     }
                 });
             });
