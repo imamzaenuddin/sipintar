@@ -20,7 +20,7 @@ class DummyDataSeeder extends Seeder
         $password = Hash::make('password123');
         $now = Carbon::now();
 
-        $this->command->info('Mulai generate dummy data (2 Kader, 20 Dewasa, 10 Remaja, 10 Balita, Jadwal 3 bulan terakhir)...');
+        $this->command->info('Mulai generate dummy data (2 Kader, 50 Warga mix usia, Jadwal ILP)...');
 
         // 1. Buat 2 Kader
         $kaders = [];
@@ -35,11 +35,10 @@ class DummyDataSeeder extends Seeder
             $kaders[] = $kader->id;
         }
 
-        // 2. Buat 20 Dewasa (Sebagai User & Kepala Keluarga)
-        // Kita asumsikan 1 dewasa = 1 KK. 
-        // 20 Dewasa ini akan menjadi 'warga'
+        // 2. Buat 15 Keluarga (User Warga & Kepala Keluarga)
         $families = [];
-        for ($i = 1; $i <= 20; $i++) {
+        $allMembers = [];
+        for ($i = 1; $i <= 15; $i++) {
             $warga = User::create([
                 'name' => $faker->name,
                 'nik' => $faker->unique()->numerify('3275############'),
@@ -61,59 +60,49 @@ class DummyDataSeeder extends Seeder
             ]);
             $families[] = $family->id;
 
-            // Masukkan dirinya sendiri sebagai Kepala Keluarga di family_members
-            FamilyMember::create([
+            // Kepala Keluarga
+            $member = FamilyMember::create([
                 'family_id' => $family->id,
                 'nik' => $warga->nik,
                 'name' => $warga->name,
-                'birth_date' => Carbon::now()->subYears(rand(25, 65)),
+                'birth_date' => Carbon::now()->subYears(rand(25, 55)),
                 'gender' => $faker->randomElement(['L', 'P']),
                 'relation' => 'kepala_keluarga',
             ]);
+            $allMembers[] = $member;
         }
 
-        // 3. Buat 10 Remaja (Usia 12-18 th)
-        for ($i = 1; $i <= 10; $i++) {
-            FamilyMember::create([
+        // 3. Tambahkan 35 Anggota Keluarga (Mix Balita, Anak, Remaja, Lansia, dll)
+        // Total 15 KK + 35 Anggota = 50 orang
+        for ($i = 1; $i <= 35; $i++) {
+            $age = rand(0, 75); // Umur random dari 0 sampai 75 tahun
+            $relation = 'anak';
+            if ($age > 60) $relation = 'orang_tua';
+            elseif ($age >= 25) $relation = 'suami_istri';
+
+            $member = FamilyMember::create([
                 'family_id' => $faker->randomElement($families),
                 'nik' => $faker->unique()->numerify('3275############'),
-                'name' => 'Remaja ' . $faker->firstName,
-                'birth_date' => Carbon::now()->subYears(rand(12, 18)),
+                'name' => $faker->name,
+                'birth_date' => Carbon::now()->subYears($age)->subMonths(rand(0, 11)),
                 'gender' => $faker->randomElement(['L', 'P']),
-                'relation' => 'anak',
+                'relation' => $relation,
             ]);
+            $allMembers[] = $member;
         }
 
-        // 4. Buat 10 Balita (Usia 0-5 th) dan datanya di KMS
-        $balitaIds = [];
-        for ($i = 1; $i <= 10; $i++) {
-            $umurBulan = rand(3, 58); // Umur balita dalam bulan
-            $birthDate = Carbon::now()->subMonths($umurBulan);
-
-            $balita = FamilyMember::create([
-                'family_id' => $faker->randomElement($families),
-                'nik' => $faker->unique()->numerify('3275############'),
-                'name' => 'Balita ' . $faker->firstName,
-                'birth_date' => $birthDate,
-                'gender' => $faker->randomElement(['L', 'P']),
-                'relation' => 'anak',
-            ]);
-            $balitaIds[] = $balita;
-        }
-
-        // 5. Buat Jadwal 3 Bulan Terakhir (Bulan ini, bulan lalu, 2 bulan lalu)
-        // Dan isi data penimbangan Balita pada jadwal Posyandu Balita tersebut
+        // 4. Buat Jadwal 3 Bulan Terakhir & Isi Data Pengukuran (KMS)
         $kategoriKegiatan = [
             ['title' => 'Posyandu Balita & Imunisasi', 'type' => 'balita'],
+            ['title' => 'Posyandu Remaja', 'type' => 'remaja'],
+            ['title' => 'Posbindu Usia Produktif', 'type' => 'dewasa'],
             ['title' => 'Posyandu Lansia Sehat', 'type' => 'lansia'],
-            ['title' => 'Posbindu / Posyandu Remaja', 'type' => 'remaja'],
         ];
 
         for ($m = 0; $m <= 2; $m++) {
             $targetMonth = Carbon::now()->subMonths($m);
 
             foreach ($kategoriKegiatan as $keg) {
-                // Tanggal jadwal di bulan tersebut (antara tgl 5 - 25)
                 $scheduleDate = $targetMonth->copy()->startOfMonth()->addDays(rand(5, 25))->setHour(8)->setMinute(0);
 
                 $schedule = Schedule::create([
@@ -124,40 +113,56 @@ class DummyDataSeeder extends Seeder
                     'created_by' => $kaders[0],
                 ]);
 
-                // Jika kegiatannya Balita, kita isi data KMS Records untuk 10 balita tersebut
-                if ($keg['type'] == 'balita') {
-                    foreach ($balitaIds as $balita) {
-                        // Pastikan balita sudah lahir pada saat jadwal ini
-                        if ($scheduleDate->greaterThanOrEqualTo($balita->birth_date)) {
-                            // Generate berat dan tinggi fiktif yang realistis
-                            $umurSaatTimbang = $balita->birth_date->diffInMonths($scheduleDate);
-                            $baseWeight = 3.5 + ($umurSaatTimbang * 0.2); // rumus kasaran
-                            $baseHeight = 50 + ($umurSaatTimbang * 1.5);
+                foreach ($allMembers as $member) {
+                    $ageInYears = $member->birth_date->diffInYears($scheduleDate);
+                    
+                    // Filter berdasarkan target kegiatan (Integrasi Layanan Primer / ILP)
+                    $isBalita = $ageInYears <= 5;
+                    $isRemaja = $ageInYears >= 12 && $ageInYears <= 18;
+                    $isDewasa = $ageInYears >= 19 && $ageInYears <= 59;
+                    $isLansia = $ageInYears >= 60;
 
-                            $weight = round($baseWeight + ($faker->randomFloat(1, -0.5, 1.5)), 1);
-                            $height = round($baseHeight + ($faker->randomFloat(1, -2, 3)), 1);
+                    $shouldRecord = false;
+                    if ($keg['type'] == 'balita' && $isBalita) $shouldRecord = true;
+                    if ($keg['type'] == 'remaja' && $isRemaja) $shouldRecord = true;
+                    if ($keg['type'] == 'dewasa' && $isDewasa) $shouldRecord = true;
+                    if ($keg['type'] == 'lansia' && $isLansia) $shouldRecord = true;
 
-                            $statusGizi = $faker->randomElement(['Gizi Baik', 'Gizi Baik', 'Gizi Baik', 'Gizi Kurang', 'Gizi Lebih / Obesitas']);
+                    // Pastikan warga sudah lahir saat jadwal tersebut
+                    if ($shouldRecord && $scheduleDate->greaterThanOrEqualTo($member->birth_date)) {
+                        $data = [
+                            'family_member_id' => $member->id,
+                            'recorded_date' => $scheduleDate->format('Y-m-d'),
+                            'recorder_id' => $faker->randomElement($kaders),
+                        ];
 
-                            KmsRecord::create([
-                                'family_member_id' => $balita->id,
-                                'recorded_date' => $scheduleDate->format('Y-m-d'),
-                                'weight' => $weight,
-                                'height' => $height,
-                                'head_circumference' => round($faker->randomFloat(1, 35, 45), 1),
-                                'lila' => round($faker->randomFloat(1, 10, 16), 1),
-                                'z_score' => ($statusGizi == 'Gizi Kurang') ? -2.5 : (($statusGizi == 'Gizi Baik') ? 0.5 : 2.5),
-                                'status_gizi' => $statusGizi,
-                                'recorder_id' => $faker->randomElement($kaders),
-                            ]);
+                        if ($isBalita) {
+                            $umurBulan = $member->birth_date->diffInMonths($scheduleDate);
+                            $data['weight'] = round(3.5 + ($umurBulan * 0.2) + $faker->randomFloat(1, -0.5, 1.5), 1);
+                            $data['height'] = round(50 + ($umurBulan * 1.5) + $faker->randomFloat(1, -2, 3), 1);
+                            $data['head_circumference'] = round($faker->randomFloat(1, 35, 45), 1);
+                            $data['lila'] = round($faker->randomFloat(1, 10, 16), 1);
+                            $status = $faker->randomElement(['Gizi Baik', 'Gizi Baik', 'Gizi Kurang', 'Gizi Lebih / Obesitas']);
+                            $data['status_gizi'] = $status;
+                            $data['z_score'] = ($status == 'Gizi Kurang') ? -2.5 : (($status == 'Gizi Baik') ? 0.5 : 2.5);
+                        } else {
+                            // Untuk Remaja, Dewasa, dan Lansia (Pengukuran ILP PTM)
+                            $data['weight'] = round($faker->randomFloat(1, 40, 85), 1);
+                            $data['height'] = round($faker->randomFloat(1, 145, 175), 1);
+                            $data['belly_circumference'] = round($faker->randomFloat(1, 60, 100), 1);
+                            $data['blood_pressure'] = rand(100, 150) . '/' . rand(70, 90);
+                            $data['blood_sugar'] = rand(80, 200);
+                            $data['uric_acid'] = round($faker->randomFloat(1, 3, 8), 1);
+                            $data['cholesterol'] = rand(150, 260);
+                            $data['examination_notes'] = $faker->randomElement(['Normal', 'Perlu pantauan pola makan', 'Rujuk faskes', 'Sehat walafiat']);
                         }
+
+                        KmsRecord::create($data);
                     }
                 }
             }
         }
 
-
-
-        $this->command->info('Generate dummy data berhasil!');
+        $this->command->info('Generate dummy data (50 Orang Warga mix usia & KMS ILP Lengkap) berhasil!');
     }
 }
