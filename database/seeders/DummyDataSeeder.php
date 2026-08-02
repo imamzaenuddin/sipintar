@@ -97,6 +97,7 @@ class DummyDataSeeder extends Seeder
             ['title' => 'Posyandu Remaja', 'type' => 'remaja'],
             ['title' => 'Posbindu Usia Produktif', 'type' => 'dewasa'],
             ['title' => 'Posyandu Lansia Sehat', 'type' => 'lansia'],
+            ['title' => 'Posyandu Keluarga (Gabungan)', 'type' => 'gabungan'],
         ];
 
         for ($m = 0; $m <= 2; $m++) {
@@ -123,10 +124,10 @@ class DummyDataSeeder extends Seeder
                     $isLansia = $ageInYears >= 60;
 
                     $shouldRecord = false;
-                    if ($keg['type'] == 'balita' && $isBalita) $shouldRecord = true;
-                    if ($keg['type'] == 'remaja' && $isRemaja) $shouldRecord = true;
-                    if ($keg['type'] == 'dewasa' && $isDewasa) $shouldRecord = true;
-                    if ($keg['type'] == 'lansia' && $isLansia) $shouldRecord = true;
+                    if ($isBalita && in_array($keg['type'], ['balita', 'gabungan'])) $shouldRecord = true;
+                    if ($isRemaja && in_array($keg['type'], ['remaja', 'gabungan'])) $shouldRecord = true;
+                    if ($isDewasa && in_array($keg['type'], ['dewasa', 'gabungan'])) $shouldRecord = true;
+                    if ($isLansia && in_array($keg['type'], ['lansia', 'gabungan'])) $shouldRecord = true;
 
                     // Pastikan warga sudah lahir saat jadwal tersebut
                     if ($shouldRecord && $scheduleDate->greaterThanOrEqualTo($member->birth_date)) {
