@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call([
+            \Laravolt\Indonesia\Seeds\DatabaseSeeder::class,
             DummyDataSeeder::class,
         ]);
     }
