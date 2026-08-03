@@ -33,7 +33,7 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
             ->when($this->filterCategory, function ($q) {
                 $q->whereHas('familyMember', function ($sub) {
                     if ($this->filterCategory == 'balita') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) < 5');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) <= 5');
                     } elseif ($this->filterCategory == 'remaja') {
                         $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
                     } elseif ($this->filterCategory == 'usia_produktif') {
@@ -73,7 +73,7 @@ new #[Layout('components.layouts.dashboard')] class extends Component {
                 <div class="col-md-7 mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
                     <select wire:model.live="filterCategory" class="form-select w-auto bg-light border-0 fw-bold">
                         <option value="">Semua Sasaran</option>
-                        <option value="balita">Balita (0-4 Tahun)</option>
+                        <option value="balita">Balita (0-5 Tahun)</option>
                         <option value="remaja">Remaja (10-18 Tahun)</option>
                         <option value="usia_produktif">Usia Produktif (15-59 Tahun)</option>
                         <option value="lansia">Lansia (≥ 60 Tahun)</option>

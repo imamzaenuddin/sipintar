@@ -103,7 +103,7 @@
         <p>Aplikasi SiPintar - Sistem Informasi & Pemantauan Posyandu Terintegrasi</p>
         <p>
             <strong>Sasaran:</strong> 
-            @if(request('category') == 'balita') Balita (0-4 Tahun)
+            @if(request('category') == 'balita') Balita (0-5 Tahun)
             @elseif(request('category') == 'remaja') Remaja (10-18 Tahun)
             @elseif(request('category') == 'usia_produktif') Usia Produktif (15-59 Tahun)
             @elseif(request('category') == 'lansia') Lansia (≥ 60 Tahun)

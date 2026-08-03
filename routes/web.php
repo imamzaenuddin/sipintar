@@ -47,7 +47,7 @@ Route::middleware('auth')->group(function () {
             ->when($category, function ($q) use ($category) {
                 $q->whereHas('familyMember', function ($sub) use ($category) {
                     if ($category == 'balita') {
-                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) < 5');
+                        $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) <= 5');
                     } elseif ($category == 'remaja') {
                         $sub->whereRaw('TIMESTAMPDIFF(YEAR, family_members.birth_date, kms_records.recorded_date) BETWEEN 10 AND 18');
                     } elseif ($category == 'usia_produktif') {
