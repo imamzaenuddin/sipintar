@@ -109,7 +109,7 @@
             @elseif(request('category') == 'lansia') Lansia (≥ 60 Tahun)
             @else Semua Sasaran
             @endif
-            | <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month(request('month', now()->month))->translatedFormat('F') }} {{ request('year', now()->year) }}
+            | <strong>Periode:</strong> {{ \Carbon\Carbon::create()->month((int) request('month', now()->month))->translatedFormat('F') }} {{ request('year', now()->year) }}
         </p>
         <p>Tanggal Cetak: {{ now()->translatedFormat('d F Y') }}</p>
     </div>
